@@ -1,14 +1,14 @@
 --[[
-	notes= {
+	note1= {"
 		    timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
 			footer = {text = message.author.name}
-	}
+	"}
+	note2 = "remember to remove token""
 ]]
 
 local discordia = require('discordia')
 local client = discordia.Client()
 local pp = require('pretty-print')
-
 
 local suffix = "/"
 
@@ -55,22 +55,34 @@ local function exec(arg, msg)
 	arg = arg:gsub('```\n?', '') -- strip markdown codeblocks
 
 	local lines = {}
-
+	local msgbool = false
 	sandbox.message = msg
 
 	sandbox.cprint = function(tobeprinted)
 		print(tobeprinted)
+		msgbool = true
 	end
 
-	sandbox.say = function(message)
-		msg.channel:sendMessage()
+	sandbox.say = function(messag)
+		local embedmessage = msg.channel:sendMessage{
+			embed = {
+				fields = {
+					{name = "I say...", value = messag, inline = true},
+				},
+				color = discordia.Color(math.random(255), math.random(255), math.random(255)).value,
+				timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
+				footer = {text = msg.author.name}
+			}
+		}
+		msgbool = true
+		if not embedmessage then msg.channel:sendMessage(luacode(messag)) end
 	end
 
 	sandbox.print = function(...)
 		table.insert(lines, printLine(...))
 	end
 
-	sandbox.p = function(...)
+	sandbox.pp = function(...)
 		table.insert(lines, prettyLine(...))
 	end
 
@@ -80,10 +92,6 @@ local function exec(arg, msg)
 	local success, runtimeError = pcall(fn)
 	if not success then return msg:reply(code(runtimeError)) end
 	lines = table.concat(lines, '\n')
-	if permissions:has('embedLinks') == true then
-
-		local on = true
-	end
 	local embedmessage = msg.channel:sendMessage {
 		embed = {
 			fields = {
@@ -94,7 +102,7 @@ local function exec(arg, msg)
 			footer = {text = msg.author.name}
 		}
 	}
-	if not embedmessage then msg:reply(luacode(lines)) end
+	if not embedmessage and msgbool == false then msg:reply(luacode(lines)) end
 end
 
 client:on('messageCreate', function(message)	
@@ -108,7 +116,6 @@ client:on('messageCreate', function(message)
 				footer = {text = message.author.name}
  	 		}
 		}
-		message:delete()
 	end
 
 	if message.content:sub(1,4):lower() == "say"..suffix then
@@ -124,6 +131,9 @@ client:on('messageCreate', function(message)
 			}
 		}
 		if not embedmessage then message.channel:sendMessage(luacode(message.content:sub(5))) end
+	end
+	if message.content:sub(1,6):lower() == suffix.."lenny" then
+		message.content = [[( ͡° ͜ʖ ͡°)]]
 	end
 	if message.content:sub(1,4):lower() == "lua"..suffix then
 		exec(message.content:sub(5),message)
