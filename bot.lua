@@ -88,6 +88,8 @@ local function exec(arg, msg)
 				{name = "Lua Console", value = lines, inline = true},
 			},
 			color = discordia.Color(math.random(255), math.random(255), math.random(255)).value,
+			timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
+			footer = {text = message.author.name}
 		}
 	}
 end
