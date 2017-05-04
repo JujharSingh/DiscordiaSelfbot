@@ -8,7 +8,7 @@
 local discordia = require('discordia')
 local client = discordia.Client()
 local pp = require('pretty-print')
-local permissions = discordia.Permissions()
+
 
 local suffix = "/"
 
@@ -23,6 +23,7 @@ end
 local function luacode(str)
 	return string.format('```lua\n%s```', str)
 end
+
 
 local sandbox = setmetatable({
 	os = {}
@@ -47,10 +48,10 @@ local function prettyLine(...)
 end
 
 local function exec(arg, msg)
-
+	local permissions = discordia.Permissions()
 	if not arg then return end
 	if msg.author ~= msg.client.owner then return end
-
+	local on = false
 	arg = arg:gsub('```\n?', '') -- strip markdown codeblocks
 
 	local lines = {}
@@ -79,19 +80,21 @@ local function exec(arg, msg)
 	local success, runtimeError = pcall(fn)
 	if not success then return msg:reply(code(runtimeError)) end
 	lines = table.concat(lines, '\n')
-	if permissions:has('embedLinks') == false then
-		return msg:reply(luacode(lines))
+	if permissions:has('embedLinks') == true then
+
+		local on = true
 	end
-	return msg.channel:sendMessage {
+	local embedmessage = msg.channel:sendMessage {
 		embed = {
 			fields = {
 				{name = "Lua Console", value = lines, inline = true},
 			},
 			color = discordia.Color(math.random(255), math.random(255), math.random(255)).value,
 			timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
-			footer = {text = message.author.name}
+			footer = {text = msg.author.name}
 		}
 	}
+	if not embedmessage then msg:reply(luacode(lines)) end
 end
 
 client:on('messageCreate', function(message)	
