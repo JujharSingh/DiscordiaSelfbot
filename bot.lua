@@ -8,6 +8,7 @@
 local discordia = require('discordia')
 local client = discordia.Client()
 local pp = require('pretty-print')
+local permissions = discordia.Permissions()
 
 local suffix = "/"
 
@@ -78,11 +79,10 @@ local function exec(arg, msg)
 	local success, runtimeError = pcall(fn)
 	if not success then return msg:reply(code(runtimeError)) end
 	lines = table.concat(lines, '\n')
-	local cchannel = msg.channel
-
-	--return msg:reply(luacode(lines))
-	msg:delete()
-	return cchannel:sendMessage {
+	if permissions:has('embedLinks') == false then
+		return msg:reply(luacode(lines))
+	end
+	return msg.channel:sendMessage {
 		embed = {
 			fields = {
 				{name = "Lua Console", value = lines, inline = true},
@@ -132,7 +132,7 @@ client:on('messageCreate', function(message)
 	end
 	if message.content:sub(1,6):lower() == "files"..suffix then
 		if message.author ~= message.client.owner then return end
-		local emedmessage = message.channel:sendMessage {
+		local embedmessage = message.channel:sendMessage {
 			embed = {
 				title = "Files:",
     			fields = {
