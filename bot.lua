@@ -98,7 +98,9 @@ client:on('messageCreate', function(message)
 		message.channel:sendMessage {
   			embed = {
     			title = "pong",
-    			color = discordia.Color(math.random(255), math.random(255), math.random(255)).value
+    			color = discordia.Color(math.random(255), math.random(255), math.random(255)).value,
+				timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
+				footer = {text = message.author.name}
  	 		}
 		}
 		message:delete()
@@ -106,7 +108,17 @@ client:on('messageCreate', function(message)
 
 	if message.content:sub(1,4):lower() == "say"..suffix then
 		if message.author ~= message.client.owner then return end
-		message.channel:sendMessage(code(message.content:sub(5)))
+		local embedmessage = message.channel:sendMessage{
+			embed = {
+				fields = {
+					{name = "I say...", value = message.content:sub(5), inline = true},
+				},
+				color = discordia.Color(math.random(255), math.random(255), math.random(255)).value,
+				timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
+				footer = {text = message.author.name}
+			}
+		}
+		if not embedmessage then message.channel:sendMessage(luacode(message.content:sub(5))) end
 	end
 	if message.content:sub(1,4):lower() == "lua"..suffix then
 		exec(message.content:sub(5),message)
@@ -120,7 +132,7 @@ client:on('messageCreate', function(message)
 	end
 	if message.content:sub(1,6):lower() == "files"..suffix then
 		if message.author ~= message.client.owner then return end
-		message.channel:sendMessage {
+		local emedmessage = message.channel:sendMessage {
 			embed = {
 				title = "Files:",
     			fields = {
@@ -130,12 +142,12 @@ client:on('messageCreate', function(message)
 					{name = "\n\n\nOther", value = "test", inline = true},
 				},
 				thumbnail = {url="http://www.staples-3p.com/s7/is/image/Staples/m005167845_sc7?$splssku$"},
-    			color = discordia.Color(math.random(255), math.random(255), math.random(255)).value
+    			color = discordia.Color(math.random(255), math.random(255), math.random(255)).value,
+				timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
+				footer = {text = message.author.name}
  	 		}
 		}
-	end
-	if message.content:sub(1,5):lower() == "poll"..suffix then
-		message.reply(message.content:sub(6).." ".."React with up for yes and down for no"):addReaction(":thumbsup::skin-tone-1:"):addReaction(":thumbdown::skin-tone-1:")
+		if not embedmessage then message.channel:sendMessage(luacode("Files: \nuse download/FILENAME to download \n\nScripts:\nHeishi\nArc_Slicer\n\nOther:\ntest")) end
 	end
 end)
 
