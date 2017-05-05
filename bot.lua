@@ -3,7 +3,7 @@
 		    timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
 			footer = {text = message.author.name}
 	"}
-	note2 = "remember to remove token""
+	note2 = "remember to remove token"
 ]]
 
 local discordia = require('discordia')
@@ -216,4 +216,4 @@ client:on('messageCreate', function(message)
 	end
 end)
 
-client:run("")
+client:run("MjcxNzM3MTE2MjE0NDI3NjUw.C91Oaw.qTRNFziBP-1S7p1drbS0dg7VC28")
