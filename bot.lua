@@ -52,7 +52,7 @@ local function exec(arg, msg)
 	if not arg then return end
 	if msg.author ~= msg.client.owner then return end
 	local on = false
-	arg = arg:gsub('```\n?', '') -- strip markdown codeblocks
+	arg = arg:gsub('```\n?', '')
 
 	local lines = {}
 	local msgbool = false
@@ -86,6 +86,31 @@ local function exec(arg, msg)
 		table.insert(lines, prettyLine(...))
 	end
 
+	sandbox.exit = function()
+		os.exit()
+	end
+
+	sandbox.cmd = function(command)
+		local f = assert(io.popen(command, 'r'))
+		local s = assert(f:read('*a'))
+		f:close()
+		s = string.gsub(s, '^%s+', '')
+		s = string.gsub(s, '%s+$', '')
+		s = string.gsub(s, '[\n\r]+', ' ')
+		local embedmessage = msg.channel:sendMessage {
+			embed = {
+				fields = {
+					{name = "Command Prompt", value = s, inline = true},
+				},
+				color = discordia.Color(math.random(255), math.random(255), math.random(255)).value,
+				timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
+				footer = {text = msg.author.name}
+			}
+		}
+		msgbool = true
+		if not embedmessage then msg.channel:sendMessage(luacode(s)) end
+	end
+
 	local fn, syntaxError = load(arg, 'DiscordBot', 't', sandbox)
 	if not fn then return msg:reply(code(syntaxError)) end
 
@@ -106,16 +131,29 @@ local function exec(arg, msg)
 end
 
 client:on('messageCreate', function(message)	
-	if message.content:lower() == 'ping'..suffix then
+	if message.content:sub(1,5):lower() == 'ping'..suffix then
 		if message.author ~= message.client.owner then return end
-		message.channel:sendMessage {
+		local x = os.clock()
+		local s = 0
+		for i=1,100000 do s = s + i end
+		local ccolor = discordia.Color(math.random(255), math.random(255), math.random(255)).value
+		local embedmessage = message.channel:sendMessage {
   			embed = {
     			title = "pong",
-    			color = discordia.Color(math.random(255), math.random(255), math.random(255)).value,
+    			color = ccolor,
 				timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
 				footer = {text = message.author.name}
  	 		}
 		}
+		if not embedmessage then noembedmsg = message.channel:sendMessage(luacode("pong")) end
+		if not embedmessage then noembedmsg.content = luacode("pong"..string.format(" - time taken: %.2fs", os.clock() - x)) end
+		if embedmessage then embedmessage.embed = {
+    		title = "pong",
+			description = string.format("time taken: %.2fs", os.clock() - x),
+    		color = ccolor,
+			timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
+			footer = {text = message.author.name}
+		} end
 	end
 
 	if message.content:sub(1,4):lower() == "say"..suffix then
@@ -164,6 +202,9 @@ client:on('messageCreate', function(message)
 		}
 		if not embedmessage then message.channel:sendMessage(luacode("Files: \nuse download/FILENAME to download \n\nScripts:\nHeishi\nArc_Slicer\n\nOther:\ntest")) end
 	end
+	if message.content:sub(1,8):lower() ==	"setgame"..suffix then
+		client:setGameName(message.content:sub(9))
+	end
 end)
 
-client:run("")
+client:run("MjcxNzM3MTE2MjE0NDI3NjUw.C91Oaw.qTRNFziBP-1S7p1drbS0dg7VC28")
