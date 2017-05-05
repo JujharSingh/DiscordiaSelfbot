@@ -173,6 +173,7 @@ client:on('messageCreate', function(message)
 		if not embedmessage then message.channel:sendMessage(luacode(message.content:sub(5))) end
 	end
 	if message.content:sub(1,6):lower() == suffix.."lenny" then
+		if message.author ~= message.client.owner then return end
 		message.content = [[( ͡° ͜ʖ ͡°)]]
 	end
 	if message.content:sub(1,4):lower() == "lua"..suffix then
@@ -205,15 +206,17 @@ client:on('messageCreate', function(message)
 		if not embedmessage then message.channel:sendMessage(luacode("Files: \nuse download/FILENAME to download \n\nScripts:\nHeishi\nArc_Slicer\n\nOther:\ntest")) end
 	end
 	if message.content:sub(1,5):lower() ==	"play"..suffix then
+		if message.author ~= message.client.owner then return end
 		local splitmessage = message.content:split("/")
 		local channel = client:getVoiceChannel(splitmessage[2])
 		local connection = channel:join()
 		connection:playFile(splitmessage[3], 99000)
 	end
 	if message.content:sub(1,8):lower() == "argtest"..suffix then
+		if message.author ~= message.client.owner then return end
 		local splitmessage = message.content:split("/")
 		message.channel:sendMessage(luacode("arg 1: "..splitmessage[2]..", arg 2: "..splitmessage[3]))
 	end
 end)
 
-client:run("MjcxNzM3MTE2MjE0NDI3NjUw.C91Oaw.qTRNFziBP-1S7p1drbS0dg7VC28")
+client:run("")
