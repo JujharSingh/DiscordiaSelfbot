@@ -13,6 +13,9 @@ client.voice:loadOpus('libopus-x64')
 client.voice:loadSodium('libsodium-x64')
 
 local suffix = "/"
+local ball = {"It is certain", "It is decidedly so", "Without a doubt", "Yes definitely", "As I see it, yes", 
+"Most likely", "Outlook good", "Yes", "Signs point to yes", "Don't count on it", 
+"My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"}
 
 client:on('ready', function()
 	print('Logged in as '.. client.user.username)
@@ -133,9 +136,28 @@ local function exec(arg, msg)
 end
 
 client:on('messageCreate', function(message)
+	if message.content:sub(1,6):lower() == "8ball"..suffix then
+		if message.author ~= message.client.owner then return end
+		local reply = ball[math.random(#ball)]
+		message.channel:sendMessage {
+			embed = {
+				title = "8Ball",
+				description = "Magic 8Ball",
+				fields = {
+					{name = "Question", value = message.content:sub(7), inline = true},
+					{name = "Answer", value = reply, inline = true},
+				},
+				color = discordia.Color(math.random(255), math.random(255), math.random(255)).value,
+				timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
+				footer = {text = message.author.name}
+			}
+		}
+	end
 	if message.content:sub(1,5):lower() == "info"..suffix then
 		if message.author ~= message.client.owner then return end
+		mentioned = message.mentionedUsers()
 		local member = message.guild:getMember(mentioned[3])
+		if not member.gameName then gameplaying = "Nothing" else gameplaying = member.gameName end
 		message.channel:sendMessage {
 			embed = {
 				title = "User Info:",
@@ -143,8 +165,17 @@ client:on('messageCreate', function(message)
 				fields = {
 					{name = "Username", value = member.name, inline = true},
 					{name = "Discriminator", value = member.discriminator, inline = true},
+					{name = "Playing", value = gameplaying, inline = true},
+					{name = "Snowflake ID", value = member.id, inline = true},
+					{name = "Bot", value = member.bot, inline = true},
+					--{name = "Current Voice Channel", value = member.voiceChannel, inline = true},
+					{name = "Role Count", value = tostring(member.roleCount), inline = true},
+					{name = "Avatar Url", value = member.avatarUrl, inline = true},
 				},
-				thumbnail = {url = member.avatarUrl;}
+				thumbnail = {url = member.avatarUrl;},
+				color = discordia.Color(math.random(255), math.random(255), math.random(255)).value,
+				timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
+				footer = {text = message.author.name}
 			}
 		}
 	end
