@@ -132,7 +132,38 @@ local function exec(arg, msg)
 	if not embedmessage and msgbool == false then msg:reply(luacode(lines)) end
 end
 
-client:on('messageCreate', function(message)	
+client:on('messageCreate', function(message)
+	if message.content:sub(1,5):lower() == "info"..suffix then
+		if msg.author ~= msg.client.owner then return end
+		member = message.guild:getMember(mentioned[3])
+		if not member then member = message.member
+		message.channel:sendMessage {
+			embed = {
+				title = "User Info:",
+				description = "some info bout' the user.",
+				fields = {
+					{name = "Username", value = member.name, inline = true},
+					{name = "Discriminator", value = member.discriminator, inline = true},
+				},
+				thumbnail = {url = member.defaultAvatarUrl;}
+			}
+		}
+	end
+	if message.content:sub(1,5):lower() == "help"..suffix then
+		message.channel:sendMessage {
+			embed = {
+				title = "Help",
+				description = "Glorious commands!",
+				fields = {
+					{name = "Fun", value = "\nlua"..suffix.." - `run lua!`",inline = true},
+					{name = "Misc", value = "suffix"..suffix.." - `change the suffix.`\nping"..suffix.." - `pong.`",inline = true},
+				},
+				color = discordia.Color(math.random(255), math.random(255), math.random(255)).value,
+				timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
+				footer = {text = message.author.name}
+			}
+		}
+	end	
 	if message.content:sub(1,5):lower() == 'ping'..suffix then
 		if message.author ~= message.client.owner then return end
 		local x = os.clock()
@@ -158,12 +189,17 @@ client:on('messageCreate', function(message)
 		} end
 	end
 
+	if message.content:sub(1,7):lower() == "suffix"..suffix then
+		if message.author ~= message.client.owner then return end
+		suffix = message.content:sub(8,8)
+	end
+
 	if message.content:sub(1,4):lower() == "say"..suffix then
 		if message.author ~= message.client.owner then return end
 		local embedmessage = message.channel:sendMessage{
 			embed = {
 				fields = {
-					{name = "I say...", value = message.content:sub(5), inline = true},
+					{name = message.author.name.." says...", value = message.content:sub(5), inline = true},
 				},
 				color = discordia.Color(math.random(255), math.random(255), math.random(255)).value,
 				timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
