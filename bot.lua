@@ -135,8 +135,7 @@ end
 client:on('messageCreate', function(message)
 	if message.content:sub(1,5):lower() == "info"..suffix then
 		if message.author ~= message.client.owner then return end
-		member = message.guild:getMember(mentioned[3])
-		if not member then member = message.member end
+		local member = message.guild:getMember(mentioned[3])
 		message.channel:sendMessage {
 			embed = {
 				title = "User Info:",
