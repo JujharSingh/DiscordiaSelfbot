@@ -136,8 +136,14 @@ local function exec(arg, msg)
 end
 
 client:on('messageCreate', function(message)
+	if message.author ~= message.client.owner then return end
+	if message.content == "close/" then
+		os.exit()
+	end
+	if message.content == "restart/" then
+		os.exit()
+	end
 	if message.content:sub(1,6):lower() == "8ball"..suffix then
-		if message.author ~= message.client.owner then return end
 		local reply = ball[math.random(#ball)]
 		message.channel:sendMessage {
 			embed = {
@@ -154,7 +160,6 @@ client:on('messageCreate', function(message)
 		}
 	end
 	if message.content:sub(1,5):lower() == "info"..suffix then
-		if message.author ~= message.client.owner then return end
 		mentioned = message.mentionedUsers()
 		local member = message.guild:getMember(mentioned[3])
 		if not member.gameName then gameplaying = "Nothing" else gameplaying = member.gameName end
@@ -185,8 +190,9 @@ client:on('messageCreate', function(message)
 				title = "Help",
 				description = "Glorious commands!",
 				fields = {
-					{name = "Fun", value = "\nlua"..suffix.." - `run lua!`",inline = true},
-					{name = "Misc", value = "suffix"..suffix.." - `change the suffix.`\nping"..suffix.." - `pong.`",inline = true},
+					{name = "Fun", value = "\nlua"..suffix.." - `run lua!`\n8Ball"..suffix.." - `consult the magic 8ball!`",inline = true},
+					{name = "Misc", value = "suffix"..suffix.." - `change the suffix.`\nping"..suffix.." - `pong.`".."\ninfo"..suffix.." - `info about user mentioned.`",inline = true},
+					{name = "Moderation", value = "None", inline = true},
 				},
 				color = discordia.Color(math.random(255), math.random(255), math.random(255)).value,
 				timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
@@ -195,7 +201,6 @@ client:on('messageCreate', function(message)
 		}
 	end	
 	if message.content:sub(1,5):lower() == 'ping'..suffix then
-		if message.author ~= message.client.owner then return end
 		local x = os.clock()
 		local s = 0
 		for i=1,100000 do s = s + i end
@@ -220,12 +225,10 @@ client:on('messageCreate', function(message)
 	end
 
 	if message.content:sub(1,7):lower() == "suffix"..suffix then
-		if message.author ~= message.client.owner then return end
 		suffix = message.content:sub(8,8)
 	end
 
 	if message.content:sub(1,4):lower() == "say"..suffix then
-		if message.author ~= message.client.owner then return end
 		local embedmessage = message.channel:sendMessage{
 			embed = {
 				fields = {
@@ -239,7 +242,6 @@ client:on('messageCreate', function(message)
 		if not embedmessage then message.channel:sendMessage(luacode(message.content:sub(5))) end
 	end
 	if message.content:sub(1,6):lower() == suffix.."lenny" then
-		if message.author ~= message.client.owner then return end
 		message.content = [[( ͡° ͜ʖ ͡°)]]
 	end
 	if message.content:sub(1,4):lower() == "lua"..suffix then
@@ -257,9 +259,8 @@ client:on('messageCreate', function(message)
 		local embedmessage = message.channel:sendMessage {
 			embed = {
 				title = "Files:",
+				description = "use download/FILENAME to download",
     			fields = {
-					{name = "ᅠ", value = "ᅠuse download/FILENAME to download", inline = true},
-					{name = "ᅠ", value = "ᅠ", inline = true},
 					{name = "\n\n\nScripts", value = "Heishi\nArc_Slicer", inline = true},
 					{name = "\n\n\nOther", value = "test", inline = true},
 				},
@@ -285,4 +286,5 @@ client:on('messageCreate', function(message)
 	end
 end)
 
-client:run("MjcxNzM3MTE2MjE0NDI3NjUw.C_ABAw.UgWXRzro3WGcTpyqCXFFcbjcOfM") --Remove token b4 commiting (note to self)
+
+client:run("") --Remove token b4 commiting (note to self)
