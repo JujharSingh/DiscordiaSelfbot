@@ -133,6 +133,7 @@ local function exec(arg, msg)
 end
 
 client:on('messageCreate', function(message)
+	if
 	if message.content:sub(1,5):lower() == "info"..suffix then
 		if msg.author ~= msg.client.owner then return end
 		member = message.guild:getMember(mentioned[3])
@@ -145,7 +146,7 @@ client:on('messageCreate', function(message)
 					{name = "Username", value = member.name, inline = true},
 					{name = "Discriminator", value = member.discriminator, inline = true},
 				},
-				thumbnail = {url = member.defaultAvatarUrl;}
+				thumbnail = {url = member.avatarUrl;}
 			}
 		}
 	end
@@ -255,4 +256,4 @@ client:on('messageCreate', function(message)
 	end
 end)
 
-client:run("")
+client:run("MjcxNzM3MTE2MjE0NDI3NjUw.C91Oaw.qTRNFziBP-1S7p1drbS0dg7VC28")
