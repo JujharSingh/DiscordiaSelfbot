@@ -134,7 +134,7 @@ end
 
 client:on('messageCreate', function(message)
 	if message.content:sub(1,5):lower() == "info"..suffix then
-		if msg.author ~= msg.client.owner then return end
+		if message.author ~= message.client.owner then return end
 		member = message.guild:getMember(mentioned[3])
 		if not member then member = message.member end
 		message.channel:sendMessage {
@@ -255,4 +255,4 @@ client:on('messageCreate', function(message)
 	end
 end)
 
-client:run("")
+client:run("MjcxNzM3MTE2MjE0NDI3NjUw.C_ABAw.UgWXRzro3WGcTpyqCXFFcbjcOfM") --Remove token b4 commiting (note to self)
