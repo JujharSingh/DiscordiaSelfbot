@@ -255,4 +255,4 @@ client:on('messageCreate', function(message)
 	end
 end)
 
-client:run("MjcxNzM3MTE2MjE0NDI3NjUw.C91Oaw.qTRNFziBP-1S7p1drbS0dg7VC28")
+client:run("")
