@@ -133,11 +133,10 @@ local function exec(arg, msg)
 end
 
 client:on('messageCreate', function(message)
-	if
 	if message.content:sub(1,5):lower() == "info"..suffix then
 		if msg.author ~= msg.client.owner then return end
 		member = message.guild:getMember(mentioned[3])
-		if not member then member = message.member
+		if not member then member = message.member end
 		message.channel:sendMessage {
 			embed = {
 				title = "User Info:",
