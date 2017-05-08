@@ -1,11 +1,3 @@
---[[
-	note1= {"
-		    timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
-			footer = {text = message.author.name}
-	"}
-	note2 = "remember to remove token"
-]]
-
 local discordia = require('discordia')
 local client = discordia.Client()
 local pp = require('pretty-print')
@@ -155,7 +147,7 @@ client:on('messageCreate', function(message)
 				},
 				color = discordia.Color(math.random(255), math.random(255), math.random(255)).value,
 				timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
-				footer = {text = message.author.name}
+				footer = {text = message.author.name.." | Bot by [FuZion] Sexy Cow#0018"}
 			}
 		}
 	end
@@ -180,7 +172,7 @@ client:on('messageCreate', function(message)
 				thumbnail = {url = member.avatarUrl;},
 				color = discordia.Color(math.random(255), math.random(255), math.random(255)).value,
 				timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
-				footer = {text = message.author.name}
+				footer = {text = message.author.name.." | Bot by [FuZion] Sexy Cow#0018"}
 			}
 		}
 	end
@@ -196,7 +188,7 @@ client:on('messageCreate', function(message)
 				},
 				color = discordia.Color(math.random(255), math.random(255), math.random(255)).value,
 				timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
-				footer = {text = message.author.name}
+				footer = {text = message.author.name.." | Bot by [FuZion] Sexy Cow#0018"}
 			}
 		}
 	end	
@@ -210,7 +202,7 @@ client:on('messageCreate', function(message)
     			title = "pong",
     			color = ccolor,
 				timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
-				footer = {text = message.author.name}
+				footer = {text = message.author.name.." | Bot by [FuZion] Sexy Cow#0018"}
  	 		}
 		}
 		if not embedmessage then noembedmsg = message.channel:sendMessage(luacode("pong")) end
@@ -220,7 +212,7 @@ client:on('messageCreate', function(message)
 			description = string.format("time taken: %.2fs", os.clock() - x),
     		color = ccolor,
 			timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
-			footer = {text = message.author.name}
+			footer = {text = message.author.name.." | Bot by [FuZion] Sexy Cow#0018"}
 		} end
 	end
 
@@ -236,7 +228,7 @@ client:on('messageCreate', function(message)
 				},
 				color = discordia.Color(math.random(255), math.random(255), math.random(255)).value,
 				timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
-				footer = {text = message.author.name}
+				footer = {text = message.author.name.." | Bot by [FuZion] Sexy Cow#0018"}
 			}
 		}
 		if not embedmessage then message.channel:sendMessage(luacode(message.content:sub(5))) end
@@ -255,7 +247,7 @@ client:on('messageCreate', function(message)
 				},
 				color = discordia.Color(math.random(255), math.random(255), math.random(255)).value,
 				timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
-				footer = {text = message.author.name}
+				footer = {text = message.author.name.." | Bot by [FuZion] Sexy Cow#0018"}
 			}
 		}
 	end
@@ -290,7 +282,7 @@ client:on('messageCreate', function(message)
 				thumbnail = {url="http://www.staples-3p.com/s7/is/image/Staples/m005167845_sc7?$splssku$"},
     			color = discordia.Color(math.random(255), math.random(255), math.random(255)).value,
 				timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
-				footer = {text = message.author.name}
+				footer = {text = message.author.name.." | Bot by [FuZion] Sexy Cow#0018"}
  	 		}
 		}
 		if not embedmessage then message.channel:sendMessage(luacode("Files: \nuse download/FILENAME to download \n\nScripts:\nHeishi\nArc_Slicer\n\nOther:\ntest")) end
