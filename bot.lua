@@ -1,6 +1,8 @@
 local discordia = require('discordia')
 local client = discordia.Client()
 local pp = require('pretty-print')
+local los = require('los')
+local operatingsystem = los.type()
 client.voice:loadOpus('libopus-x64')
 client.voice:loadSodium('libsodium-x64')
 
@@ -148,6 +150,17 @@ client:on('messageCreate', function(message)
 				color = discordia.Color(math.random(255), math.random(255), math.random(255)).value,
 				timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
 				footer = {text = message.author.name.." | Bot by [FuZion] Sexy Cow#0018"}
+			}
+		}
+	end
+	if message.content:lower() == "osinfo"..suffix then
+		message.channel:sendMessage {
+			embed = {
+				title = "OS Information",
+				description = ":P",
+				fields = {
+					{name = "Operating System", value = operatingsystem, inline = true}
+				}
 			}
 		}
 	end
