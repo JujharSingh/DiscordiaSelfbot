@@ -99,9 +99,6 @@ local function exec(arg, msg)
 		local f = assert(io.popen(command, 'r'))
 		local s = assert(f:read('*a'))
 		f:close()
-		s = string.gsub(s, '^%s+', '')
-		s = string.gsub(s, '%s+$', '')
-		s = string.gsub(s, '[\n\r]+', ' ')
 		local embedmessage = msg.channel:sendMessage {
 			embed = {
 				fields = {
@@ -132,6 +129,7 @@ local function exec(arg, msg)
 			footer = {text = msg.author.name}
 		}
 	}
+	if lines == "lua" then msgbool = true end
 	if not embedmessage and msgbool == false then msg:reply(luacode(lines)) end
 end
 
@@ -141,6 +139,8 @@ client:on('messageCreate', function(message)
 		os.exit()
 	end
 	if message.content == "restart/" then
+		os.exit()
+		os.exit()
 		os.exit()
 	end
 	if message.content:sub(1,6):lower() == "8ball"..suffix then
@@ -160,7 +160,7 @@ client:on('messageCreate', function(message)
 		}
 	end
 	if message.content:sub(1,5):lower() == "info"..suffix then
-		mentioned = message.mentionedUsers()
+		local mentioned = message.mentionedUsers()
 		local member = message.guild:getMember(mentioned[3])
 		if not member.gameName then gameplaying = "Nothing" else gameplaying = member.gameName end
 		message.channel:sendMessage {
@@ -241,8 +241,31 @@ client:on('messageCreate', function(message)
 		}
 		if not embedmessage then message.channel:sendMessage(luacode(message.content:sub(5))) end
 	end
-	if message.content:sub(1,6):lower() == suffix.."lenny" then
+	if message.content:lower() == suffix.."lenny" then
 		message.content = [[( ͡° ͜ʖ ͡°)]]
+	end
+	if message.content:sub(1,4):lower() == "cmd"..suffix then
+		local f = assert(io.popen(message.content:sub(5), 'r'))
+		local s = assert(f:read('*a'))
+		f:close()
+		local embedmessage = message.channel:sendMessage {
+			embed = {
+				fields = {
+					{name = "Command Prompt", value = s, inline = true},
+				},
+				color = discordia.Color(math.random(255), math.random(255), math.random(255)).value,
+				timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
+				footer = {text = message.author.name}
+			}
+		}
+	end
+	if message.content:lower() == suffix.."idk" then
+		local fatnooblet = client:getGuild('163820409677021187')
+		local googlemoji = client:getGuild('272885620769161216')
+		local kawaii = fatnooblet:getEmoji("name", "FeelsKawaiiMan")
+		local musclel = googlemoji:getEmoji("name", "googlemuscleL")
+		local muscler = googlemoji:getEmoji("name", "googlemuscleR")
+		message.content = musclel.string..kawaii.string..muscler.string
 	end
 	if message.content:sub(1,4):lower() == "lua"..suffix then
 		exec(message.content:sub(5),message)
@@ -287,4 +310,4 @@ client:on('messageCreate', function(message)
 end)
 
 
-client:run("") --Remove token b4 commiting (note to self)
+client:run(args[2])
