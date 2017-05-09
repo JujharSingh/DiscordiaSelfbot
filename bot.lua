@@ -300,7 +300,22 @@ client:on('messageCreate', function(message)
 		}
 		if not embedmessage then message.channel:sendMessage(luacode("Files: \nuse download/FILENAME to download \n\nScripts:\nHeishi\nArc_Slicer\n\nOther:\ntest")) end
 	end
-	if message.content:sub(1,5):lower() ==	"play"..suffix then
+
+	if message.content:lower() == "advertise"..suffix then
+		message.channel:sendMessage {
+			embed = {
+				title = "DiscordiaSelfBot",
+				description = "A self bot made by [FuZion] Sexy Cow#0018",
+				fields = {
+					{name = "Features", value = "• Ability to change the suffix.\n• fun commands!\n• Unique restart feature!"},
+					{name = "Download", value = "https://github.com/JujharSingh/DiscordiaSelfbot\nget started by opening a command prompt and running luvit.exe restart.lua TOKEN and typing open/ in discord"},
+				},
+				color = discordia.Color(255, 0, 0).value
+			}
+		}
+	end
+
+	if message.content:sub(1,5):lower() == "play"..suffix then
 		if message.author ~= message.client.owner then return end
 		local splitmessage = message.content:split("/")
 		local channel = client:getVoiceChannel(splitmessage[2])
