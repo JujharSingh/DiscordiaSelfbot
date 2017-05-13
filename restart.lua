@@ -3,9 +3,18 @@ local client = discordia.Client()
 
 if not args[2] then error("Please provide a token!") end
 local cmd = [[luvit C:\Users\jujha\Documents\GitHub\DiscordiaSelfbot\bot.lua ]]..tostring(args[2])
+
+client:on('ready', function()
+	print('Logged in as '.. client.user.username)
+    print('Use the open/ command to start the selfbot')
+end)
+
 client:on('messageCreate', function(message)
     if message.content == "open/" then
-        os.execute(cmd)
+        --os.execute(cmd)
+        local f = assert(io.popen(cmd, 'r'))
+		local s = assert(f:read('*a'))
+		f:close()
     end
     if message.content == "restart/" then
         local msg = message.channel:sendMessage {
@@ -21,7 +30,10 @@ client:on('messageCreate', function(message)
                 title = "SelfBot Restart Complete",
                 description = string.format("time taken: %.2fs", os.clock() - x)
             }
-        os.execute(cmd)
+        --os.execute(cmd)
+        local f = assert(io.popen(cmd, 'r'))
+		local s = assert(f:read('*a'))
+		f:close()
     end
 
 end)

@@ -123,7 +123,7 @@ local function exec(arg, msg)
 			footer = {text = msg.author.name}
 		}
 	}
-	if lines == "lua" then msgbool = true end
+	if lines == "" then msgbool = true end
 	if not embedmessage and msgbool == false then msg:reply(luacode(lines)) end
 end
 
@@ -171,7 +171,7 @@ client:on('messageCreate', function(message)
 		message.channel:sendMessage {
 			embed = {
 				title = "User Info:",
-				description = "some info bout' the user.",
+				description = "information about the mentioned user",
 				fields = {
 					{name = "Username", value = member.name, inline = true},
 					{name = "Discriminator", value = member.discriminator, inline = true},
@@ -188,6 +188,33 @@ client:on('messageCreate', function(message)
 				footer = {text = message.author.name.." | Bot by [FuZion] Sexy Cow#0018"}
 			}
 		}
+	end
+	if message.content:lower() == "unsafe.spam"..suffix then
+		for member in message.guild.members do
+			message.channel:sendMessage(member.mentionString)
+		end
+	end
+	if message.content:sub(1,6):lower() == "cinfo"..suffix then
+		local mentioned = message.mentionedChannels()
+		local channel = message.guild:getChannel(mentioned[2])
+		local nsfw = "false"
+		if channel.name:startswith("nsfw") == true then nsfw = "true" end
+		local embedmessage = message.channel:sendMessage {
+			embed = {
+				title = "Channel Info:",
+				description = "information about the mentioned channel",
+				color = discordia.Color(math.random(255), math.random(255), math.random(255)).value,
+				fields = {
+					{name = "Name", value = channel.name, inline = true},
+					{name = "Oldest Message", value = channel.firstMessage.content, inline = true},
+					{name = "NSFW", value = nsfw, inline = true},
+					{name = "Latest Message", value = channel.lastMessage.content, inline = true}
+				}
+			}
+		}
+		if not embedmessage then
+			message.channel:sendMessage(luacode("Channel Info:\nName: "..channel.name.."\nOldest Message: "..channel.firstMessage.content.."\nLatest Message: "..channel.lastMessage.content))
+		end
 	end
 	if message.content:sub(1,5):lower() == "help"..suffix then
 		message.channel:sendMessage {
@@ -327,7 +354,9 @@ client:on('messageCreate', function(message)
 		local splitmessage = message.content:split("/")
 		message.channel:sendMessage(luacode("arg 1: "..splitmessage[2]..", arg 2: "..splitmessage[3]))
 	end
+	if message.content == "crash"..suffix then
+		error("Crash test executed!")
+	end
 end)
-
 
 client:run(args[2])
