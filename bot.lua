@@ -190,9 +190,23 @@ client:on('messageCreate', function(message)
 		}
 	end
 	if message.content:lower() == "unsafe.spam"..suffix then
+		local spammembers = ""
+		local spoomed = false
+		local spam = {}
+		local thing = 0
 		for member in message.guild.members do
-			message.channel:sendMessage(member.mentionString)
+			thing = thing + 1
+			spammembers = spammembers.." "..member.mentionString
+			if string.len(spammembers) > 1800 then
+				message.channel:sendMessage(spammembers)
+				spammembers = ""
+				spoomed = true
+			end
 		end
+		if spoomed == false then
+			message.channel:sendMessage(spammembers)
+		end
+		print(thing.." users mentioned!")
 	end
 	if message.content:sub(1,6):lower() == "cinfo"..suffix then
 		local mentioned = message.mentionedChannels()
