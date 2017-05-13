@@ -6,9 +6,10 @@ local cmd = [[luvit C:\Users\jujha\Documents\GitHub\DiscordiaSelfbot\bot.lua ]].
 
 client:on('ready', function()
 	print('Logged in as '.. client.user.username)
-    print('Use the open/ command to start the selfbot')
 end)
-
+local f = assert(io.popen(cmd, 'r'))
+local s = assert(f:read('*a'))
+f:close()
 client:on('messageCreate', function(message)
     if message.content == "open/" then
         --os.execute(cmd)
