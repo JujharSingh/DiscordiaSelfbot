@@ -2,7 +2,7 @@ local discordia = require('discordia')
 local client = discordia.Client()
 
 if not args[2] then error("Please provide a token!") end
-local cmd = [[luvit C:\Users\jujha\Documents\GitHub\DiscordiaSelfbot\bot.lua ]]..tostring(args[2])
+local cmd = [[luvit bot.lua ]]..tostring(args[2])
 
 client:on('ready', function()
 	print('Logged in as '.. client.user.username)

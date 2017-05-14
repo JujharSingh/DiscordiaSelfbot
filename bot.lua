@@ -62,6 +62,7 @@ local function exec(arg, msg)
 		msgbool = true
 	end
 
+	sandbox.client = client
 	sandbox.say = function(messag)
 		local embedmessage = msg.channel:sendMessage{
 			embed = {
@@ -194,6 +195,7 @@ client:on('messageCreate', function(message)
 		local spoomed = false
 		local spam = {}
 		local thing = 0
+		while true do
 		for member in message.guild.members do
 			thing = thing + 1
 			spammembers = spammembers.." "..member.mentionString
@@ -205,6 +207,7 @@ client:on('messageCreate', function(message)
 		end
 		if spoomed == false then
 			message.channel:sendMessage(spammembers)
+		end
 		end
 		print(thing.." users mentioned!")
 	end
