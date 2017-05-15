@@ -5,14 +5,36 @@ local los = require('los')
 local operatingsystem = los.type()
 client.voice:loadOpus('libopus-x64')
 client.voice:loadSodium('libsodium-x64')
-
+local timer = require('timer')
+local http = require("coro-http")
 local suffix = "/"
 local ball = {"It is certain", "It is decidedly so", "Without a doubt", "Yes definitely", "As I see it, yes", 
 "Most likely", "Outlook good", "Yes", "Signs point to yes", "Don't count on it", 
 "My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"}
+function dump(o)
+   if type(o) == 'table' then
+      local s = '{ '
+      for k,v in pairs(o) do
+         if type(k) ~= 'number' then k = '"'..k..'"' end
+         s = s .. '['..k..'] = ' .. dump(v) .. ','
+      end
+      return s .. '} '
+   else
+      return tostring(o)
+   end
+end
+	coroutine.wrap(function()
+		local head,body = http.request("GET","http://www.greens.org/about/software/editor.txt")
+		print("Head: "..dump(head).."\nBody:"..dump(body))
+	end)()
+local wait = function(time)
+	timer.sleep(time)
+end
 
 client:on('ready', function()
 	print('Logged in as '.. client.user.username)
+	
+
 end)
 
 local function code(str)
@@ -132,6 +154,9 @@ client:on('messageCreate', function(message)
 	if message.author ~= message.client.owner then return end
 	if message.content == "close/" then
 		os.exit()
+	end
+	if message.content:sub(1,5):lower() == "calc"..suffix then
+		--message.content:split
 	end
 	if message.content == "restart/" then
 		os.exit()
