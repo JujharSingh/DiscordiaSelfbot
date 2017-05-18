@@ -6,35 +6,63 @@ local operatingsystem = los.type()
 client.voice:loadOpus('libopus-x64')
 client.voice:loadSodium('libsodium-x64')
 local timer = require('timer')
+local json = require('json')
 local http = require("coro-http")
 local suffix = "/"
 local ball = {"It is certain", "It is decidedly so", "Without a doubt", "Yes definitely", "As I see it, yes", 
 "Most likely", "Outlook good", "Yes", "Signs point to yes", "Don't count on it", 
 "My reply is no", "My sources say no", "Outlook not so good", "Very doubtful"}
-function dump(o)
-   if type(o) == 'table' then
-      local s = '{ '
-      for k,v in pairs(o) do
-         if type(k) ~= 'number' then k = '"'..k..'"' end
-         s = s .. '['..k..'] = ' .. dump(v) .. ','
-      end
-      return s .. '} '
-   else
-      return tostring(o)
-   end
+		function dump(o)
+			if type(o) == 'table' then
+	      		local s = '{ '
+	      		for k,v in pairs(o) do
+	         		if type(k) ~= 'number' then k = '"'..k..'"' end
+	         		s = s .. '['..k..'] = ' .. dump(v) .. ','
+	      		end
+	      		return s .. '} '
+	   		else
+      			return tostring(o)
+   			end
+		end
+function print_t ( t )  
+    local print_r_cache={}
+    local function sub_print_r(t,indent)
+        if (print_r_cache[tostring(t)]) then
+            print(indent.."*"..tostring(t))
+        else
+            print_r_cache[tostring(t)]=true
+            if (type(t)=="table") then
+                for pos,val in pairs(t) do
+                    if (type(val)=="table") then
+                        print(indent.."["..pos.."] => "..tostring(t).." {")
+                        sub_print_r(val,indent..string.rep(" ",string.len(pos)+8))
+                        print(indent..string.rep(" ",string.len(pos)+6).."}")
+                    elseif (type(val)=="string") then
+                        print(indent.."["..pos..'] => "'..val..'"')
+                    else
+                        print(indent.."["..pos.."] => "..tostring(val))
+                    end
+                end
+            else
+                print(indent..tostring(t))
+            end
+        end
+    end
+    if (type(t)=="table") then
+        print(tostring(t).." {")
+        sub_print_r(t,"  ")
+        print("}")
+    else
+        sub_print_r(t,"  ")
+    end
+    print()
 end
-	coroutine.wrap(function()
-		local head,body = http.request("GET","http://www.greens.org/about/software/editor.txt")
-		print("Head: "..dump(head).."\nBody:"..dump(body))
-	end)()
 local wait = function(time)
 	timer.sleep(time)
 end
 
 client:on('ready', function()
 	print('Logged in as '.. client.user.username)
-	
-
 end)
 
 local function code(str)
@@ -155,8 +183,25 @@ client:on('messageCreate', function(message)
 	if message.content == "close/" then
 		os.exit()
 	end
-	if message.content:sub(1,5):lower() == "calc"..suffix then
-		--message.content:split
+	if message.content:sub(1,6):lower() == "urban"..suffix then
+		query = message.content:sub(7)
+		query = query:gsub("(%s)", "%%20")
+		coroutine.wrap(function()
+			head,body = http.request("GET","http://urbanscraper.herokuapp.com/define/"..query)
+			result = json.parse(dump(body))
+			message.channel:sendMessage {
+				embed = {
+					title = result['term'],
+					description = result['definition'].."\n\n\n\n\nᅠ",
+					fields = {
+						{name = "Example", value = result['example'], inline = false}
+					},
+					color = discordia.Color(math.random(255), math.random(255), math.random(255)).value,
+					timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
+					footer = {text = message.author.name.." | Bot by [FuZion] Sexy Cow#0018"}
+				}
+			}
+		end)()
 	end
 	if message.content == "restart/" then
 		os.exit()
@@ -204,7 +249,6 @@ client:on('messageCreate', function(message)
 					{name = "Playing", value = gameplaying, inline = true},
 					{name = "Snowflake ID", value = member.id, inline = true},
 					{name = "Bot", value = member.bot, inline = true},
-					--{name = "Current Voice Channel", value = member.voiceChannel, inline = true},
 					{name = "Role Count", value = tostring(member.roleCount), inline = true},
 					{name = "Avatar Url", value = member.avatarUrl, inline = true},
 				},
@@ -377,7 +421,7 @@ client:on('messageCreate', function(message)
 				description = "A self bot made by [FuZion] Sexy Cow#0018",
 				fields = {
 					{name = "Features", value = "• Ability to change the suffix.\n• fun commands!\n• Unique restart feature!"},
-					{name = "Download", value = "https://github.com/JujharSingh/DiscordiaSelfbot\nget started by opening a command prompt and running luvit.exe restart.lua TOKEN and typing open/ in discord"},
+					{name = "Download", value = "https://github.com/JujharSingh/DiscordiaSelfbot\nget started by opening a command prompt and running luvit.exe bootstrapper.lua TOKEN and typing open/ in discord"},
 				},
 				color = discordia.Color(255, 0, 0).value
 			}

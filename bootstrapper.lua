@@ -1,8 +1,29 @@
 local discordia = require('discordia')
 local client = discordia.Client()
+local http = require("coro-http")
 
 if not args[2] then error("Please provide a token!") end
 local cmd = [[luvit bot.lua ]]..tostring(args[2])
+function dump(o)
+   if type(o) == 'table' then
+      local s = '{ '
+      for k,v in pairs(o) do
+         if type(k) ~= 'number' then k = '"'..k..'"' end
+         s = s .. '['..k..'] = ' .. dump(v) .. ','
+      end
+      return s .. '} '
+   else
+      return tostring(o)
+   end
+end
+coroutine.wrap(function()
+	local head,body = http.request("GET","http://pastebin.com/raw/5bK92bki")
+    print(dump(head))
+	--[[if version ~= "2" then
+        print("You are using an outdated version, please update!")
+        os.exit()
+    end]]
+end)()
 
 client:on('ready', function()
 	print('Logged in as '.. client.user.username)
