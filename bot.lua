@@ -183,12 +183,65 @@ client:on('messageCreate', function(message)
 	if message.content == "close/" then
 		os.exit()
 	end
+	if message.content:sub(1,7):lower() == "shares"..suffix then
+		query = message.content:sub(8):lower()
+		query = query:gsub("(%s)", "%%20")
+		coroutine.wrap(function()
+			local head,body = http.request("GET", "http://count.donreach.com/?url="..query)
+			local result = json.parse(dump(body))
+			message.channel:sendMessage {
+				embed = {
+					title = "How many times "..result["url"].." has been shared",
+					fields = {
+						{name = "Facebook", value = result["shares"]["facebook"], inline = true},
+						{name = "Google", value = result["shares"]["google"], inline = true},
+						{name = "LinkedIn", value = result["shares"]["linkedin"], inline = true},
+						{name = "Pinterest", value = result["shares"]["pinterest"], inline = true},
+						{name = "Total", value = result["total"], inline = true}
+					}
+				}
+			}
+		end)()
+	end
+	if message.content:sub(1,8):lower() == "netflix"..suffix then
+		query = message.content:sub(9)
+		query = query:gsub("(%s)", "%%20")
+		coroutine.wrap(function()
+			local netflixError = false
+			local head,body = http.request("GET", "http://netflixroulette.net/api/api.php?title="..query)
+			local result = json.parse(dump(body))
+			if result["message"] then
+				message.channel:sendMessage {
+					embed = {
+						title = result["errorcode"],
+						description = result["message"],
+						timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
+						color = discordia.Color(math.random(255), math.random(255), math.random(255)).value,
+						footer = {text = message.author.name.." | Bot by [FuZion] Sexy Cow#0018"}
+					}
+				}
+				netflixError = true
+			end
+			if netflixError == false then 
+				message.channel:sendMessage {
+					embed = {
+						title = result["show_title"].." - "..result["runtime"],
+						description = result["summary"],
+						thumbnail = {url = result["poster"]},
+						timestamp = os.date('!%Y-%m-%dT%H:%M:%S'),
+						color = discordia.Color(math.random(255), math.random(255), math.random(255)).value,
+						footer = {text = message.author.name.." | Bot by [FuZion] Sexy Cow#0018"}
+					}
+				}
+			end
+		end)()
+	end
 	if message.content:sub(1,6):lower() == "urban"..suffix then
 		query = message.content:sub(7)
 		query = query:gsub("(%s)", "%%20")
 		coroutine.wrap(function()
-			head,body = http.request("GET","http://urbanscraper.herokuapp.com/define/"..query)
-			result = json.parse(dump(body))
+			local head,body = http.request("GET","http://urbanscraper.herokuapp.com/define/"..query)
+			local result = json.parse(dump(body))
 			message.channel:sendMessage {
 				embed = {
 					title = result['term'],
